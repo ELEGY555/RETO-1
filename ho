@@ -1,0 +1,109 @@
+index.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encriptador de Texto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #container {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea, input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        #output {
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Encriptador de Texto</h1>
+        <textarea id="inputText" placeholder="Ingrese el texto aquí..."></textarea><br>
+        <button id="encryptBtn">Encriptar</button>
+        <button id="decryptBtn">Desencriptar</button><br>
+        <textarea id="output" readonly placeholder="El resultado aparecerá aquí..."></textarea><br>
+        <button id="copyBtn">Copiar</button>
+        <p id="message"></p>
+        <footer>
+            <p>Creado por Carla - 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+script.js
+document.addEventListener('DOMContentLoaded', () => {
+    const inputText = document.getElementById('inputText');
+    const output = document.getElementById('output');
+    const encryptBtn = document.getElementById('encryptBtn');
+    const decryptBtn = document.getElementById('decryptBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const message = document.getElementById('message');
+
+    const validText = (text) => {
+        const regex = /^[a-z\s]+$/;
+        return regex.test(text);
+    };
+
+    encryptBtn.addEventListener('click', () => {
+        const text = inputText.value;
+        if (validText(text)) {
+            const encryptedText = btoa(text); // Simple Base64 encoding
+            output.value = encryptedText;
+            message.textContent = "";
+            output.style.display = 'block';
+        } else {
+            message.textContent = "Error: Solo se permiten letras minúsculas y espacios.";
+            output.value = "";
+            output.style.display = 'none';
+        }
+    });
+
+    decryptBtn.addEventListener('click', () => {
+        const text = inputText.value;
+        if (validText(text)) {
+            try {
+                const decryptedText = atob(text); // Simple Base64 decoding
+                output.value = decryptedText;
+                message.textContent = "";
+                output.style.display = 'block';
+            } catch (e) {
+                message.textContent = "Error: El texto ingresado no está en un formato encriptado válido.";
+                output.value = "";
+                output.style.display = 'none';
+            }
+        } else {
+            message.textContent = "Error: Solo se permiten letras minúsculas y espacios.";
+            output.value = "";
+            output.style.display = 'none';
+        }
+    });
+
+    copyBtn.addEventListener('click', () => {
+        output.select();
+        document.execCommand('copy');
+        alert('Texto copiado al portapapeles!');
+    });
+});
+
